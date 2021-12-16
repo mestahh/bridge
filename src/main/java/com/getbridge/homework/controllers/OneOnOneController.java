@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -25,8 +26,13 @@ public class OneOnOneController {
   private OneOnOneRepository repository;
 
   @GetMapping("/one_on_ones")
-  public List<OneOnOne> getOneOnOnes() {
-    Iterable<OneOnOne> result = repository.findAll();
+  public List<OneOnOne> getOneOnOnes(@RequestParam Optional<Boolean>  closed) {
+    Iterable<OneOnOne> result;
+    if (closed.isPresent()) {
+      result = repository.findByClosed(closed.get());
+    } else {
+      result = repository.findAll();
+    }
     return StreamSupport.stream(result.spliterator(), false)
         .collect(Collectors.toList());
   }

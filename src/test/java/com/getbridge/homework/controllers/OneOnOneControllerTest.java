@@ -163,4 +163,34 @@ public class OneOnOneControllerTest {
 
     verifyNoMoreInteractions(repository);
   }
+
+  @Test
+  public void itShouldFilterClosedOneOnOnes() throws Exception {
+    OneOnOne oneOnOne = new OneOnOne();
+    oneOnOne.setId(123L);
+    List<OneOnOne> oneOnOnes = new ArrayList<>();
+    oneOnOnes.add(oneOnOne);
+
+    when(repository.findByClosed(true)).thenReturn(oneOnOnes);
+
+    mockMvc.perform(get("/one_on_ones?closed={closed}", true)
+            .contentType("application/json"))
+        .andExpect(content().string(objectMapper.writeValueAsString(oneOnOnes)))
+        .andExpect(status().isOk());
+  }
+
+  @Test
+  public void itShouldFilterNotClosedOneOnOnes() throws Exception {
+    OneOnOne oneOnOne = new OneOnOne();
+    oneOnOne.setId(123L);
+    List<OneOnOne> oneOnOnes = new ArrayList<>();
+    oneOnOnes.add(oneOnOne);
+
+    when(repository.findByClosed(false)).thenReturn(oneOnOnes);
+
+    mockMvc.perform(get("/one_on_ones?closed={closed}", false)
+            .contentType("application/json"))
+        .andExpect(content().string(objectMapper.writeValueAsString(oneOnOnes)))
+        .andExpect(status().isOk());
+  }
 }

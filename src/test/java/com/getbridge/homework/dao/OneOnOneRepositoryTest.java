@@ -1,6 +1,7 @@
 package com.getbridge.homework.dao;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.getbridge.homework.model.OneOnOne;
 import java.util.List;
@@ -53,5 +54,23 @@ public class OneOnOneRepositoryTest {
     testObj.delete(oneOnOne);
     oneOnOnes = (List<OneOnOne>) testObj.findAll();
     assertEquals(oneOnOnes.size(), 0);
+  }
+
+  @Test
+  public void itShouldFilterOneOnOnes() {
+    OneOnOne item1 = new OneOnOne();
+    item1.setId(123L);
+    item1.setClosed(true);
+
+    OneOnOne item2 = new OneOnOne();
+    item2.setId(234L);
+    item2.setClosed(false);
+
+    testObj.save(item1);
+    testObj.save(item2);
+
+    List<OneOnOne> oneOnOnes = testObj.findByClosed(true);
+    assertEquals(oneOnOnes.size(), 1);
+    assertTrue(oneOnOnes.get(0).isClosed());
   }
 }
