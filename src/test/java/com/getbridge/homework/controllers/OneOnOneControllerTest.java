@@ -53,8 +53,10 @@ public class OneOnOneControllerTest {
   @Test
   public void itShouldBeAbleToSaveOneOnOne() throws Exception {
     OneOnOne oneOnOne = new OneOnOne();
+    oneOnOne.setTitle("title");
 
     OneOnOne oneOnOneWithId = new OneOnOne();
+    oneOnOneWithId.setTitle("title");
     oneOnOneWithId.setId(1L);
 
     when(repository.save(oneOnOne)).thenReturn(oneOnOneWithId);

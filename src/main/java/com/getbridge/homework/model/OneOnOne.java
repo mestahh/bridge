@@ -6,9 +6,11 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import lombok.Data;
 
 @Entity
 @Table(name = "one_on_ones")
+@Data
 public class OneOnOne {
 
   @Id
@@ -19,15 +21,4 @@ public class OneOnOne {
   private LocalDate plannedTime;
   private String description;
   private String location;
-
-  public void setId(Long id) {
-    this.id = id;
-  }
-
-  public boolean equals(Object o) {
-    if (o instanceof OneOnOne) {
-      return id == ((OneOnOne) o).id;
-    }
-    return false;
-  }
 }
