@@ -1,7 +1,6 @@
 package com.getbridge.homework.model;
 
 import java.time.LocalDate;
-
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -23,5 +22,12 @@ public class OneOnOne {
 
   public void setId(Long id) {
     this.id = id;
+  }
+
+  public boolean equals(Object o) {
+    if (o instanceof OneOnOne) {
+      return id == ((OneOnOne) o).id;
+    }
+    return false;
   }
 }

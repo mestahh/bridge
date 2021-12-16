@@ -1,7 +1,9 @@
 package com.getbridge.homework.controllers;
 
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -46,5 +48,27 @@ public class OneOnOneControllerTest {
             .contentType("application/json"))
         .andExpect(content().string(""))
         .andExpect(status().is(204));
+  }
+
+  @Test
+  public void itShouldBeAbleToSaveOneOnOne() throws Exception {
+    OneOnOne oneOnOne = new OneOnOne();
+
+    OneOnOne oneOnOneWithId = new OneOnOne();
+    oneOnOneWithId.setId(1L);
+
+    when(repository.save(oneOnOne)).thenReturn(oneOnOneWithId);
+
+    mockMvc.perform(post("/one_on_ones").contentType("application/json")
+            .content(objectMapper.writeValueAsString(oneOnOne)))
+        .andExpect(content().string(objectMapper.writeValueAsString(oneOnOneWithId)));
+    verify(repository).save(oneOnOne);
+  }
+
+  @Test
+  public void savingAnObjectShouldReturnAnErrorIfObjectIsNull() throws Exception {
+    mockMvc.perform(post("/one_on_ones").contentType("application/json")
+            .content(""))
+        .andExpect(status().is(400));
   }
 }
