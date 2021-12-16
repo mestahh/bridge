@@ -2,7 +2,6 @@ package com.getbridge.homework.controllers;
 
 import com.getbridge.homework.dao.OneOnOneRepository;
 import com.getbridge.homework.model.OneOnOne;
-
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,7 +17,7 @@ public class OneOnOneController {
   private OneOnOneRepository repository;
 
   @GetMapping("/one_on_ones/{id}")
-  public OneOnOne index(@PathVariable("id") Long id) {
+  public OneOnOne getOneOnOne(@PathVariable("id") Long id) {
     Optional<OneOnOne> oneOnOne = repository.findById(id);
     if (!oneOnOne.isPresent()) {
       throw new ResponseStatusException(HttpStatus.NO_CONTENT,

@@ -16,31 +16,31 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 @ExtendWith(SpringExtension.class)
 @DataJpaTest
 public class OneOnOneRepositoryTest {
-  
-    @Autowired
-    private OneOnOneRepository testObj;
-   
-    @Test
-    public void itShouldSaveOneOnOnes() {
-        OneOnOne oneOnOne = new OneOnOne();
-        
-        testObj.save(oneOnOne);
-        List<OneOnOne> oneOnOnes = (List<OneOnOne>) testObj.findAll();
-        
-        assertEquals(oneOnOnes.size(), 1);
-    }
 
-    @Test 
-    public void itShouldDeleteOneOnOnes() {
-        OneOnOne oneOnOne = new OneOnOne();
-        
-        testObj.save(oneOnOne);
-        List<OneOnOne> oneOnOnes = (List<OneOnOne>) testObj.findAll();
-        
-        assertEquals(oneOnOnes.size(), 1);
+  @Autowired
+  private OneOnOneRepository testObj;
 
-        testObj.delete(oneOnOne);
-        oneOnOnes = (List<OneOnOne>) testObj.findAll();
-        assertEquals(oneOnOnes.size(), 0);
-    }
+  @Test
+  public void itShouldSaveOneOnOnes() {
+    OneOnOne oneOnOne = new OneOnOne();
+
+    testObj.save(oneOnOne);
+    List<OneOnOne> oneOnOnes = (List<OneOnOne>) testObj.findAll();
+
+    assertEquals(oneOnOnes.size(), 1);
+  }
+
+  @Test
+  public void itShouldDeleteOneOnOnes() {
+    OneOnOne oneOnOne = new OneOnOne();
+
+    testObj.save(oneOnOne);
+    List<OneOnOne> oneOnOnes = (List<OneOnOne>) testObj.findAll();
+
+    assertEquals(oneOnOnes.size(), 1);
+
+    testObj.delete(oneOnOne);
+    oneOnOnes = (List<OneOnOne>) testObj.findAll();
+    assertEquals(oneOnOnes.size(), 0);
+  }
 }
