@@ -20,4 +20,8 @@ public class OneOnOne {
     private LocalDate plannedTime;
     private String description;
     private String location;
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 }
