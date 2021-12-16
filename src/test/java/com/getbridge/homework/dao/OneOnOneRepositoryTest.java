@@ -18,15 +18,29 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 public class OneOnOneRepositoryTest {
   
     @Autowired
-    private OneOnOneRepository oneOnOneRepository;
+    private OneOnOneRepository testObj;
    
     @Test
     public void itShouldSaveOneOnOnes() {
         OneOnOne oneOnOne = new OneOnOne();
         
-        oneOnOneRepository.save(oneOnOne);
-        List<OneOnOne> oneOnOnes = (List<OneOnOne>) oneOnOneRepository.findAll();
+        testObj.save(oneOnOne);
+        List<OneOnOne> oneOnOnes = (List<OneOnOne>) testObj.findAll();
         
         assertEquals(oneOnOnes.size(), 1);
-    }    
+    }
+
+    @Test 
+    public void itShouldDeleteOneOnOnes() {
+        OneOnOne oneOnOne = new OneOnOne();
+        
+        testObj.save(oneOnOne);
+        List<OneOnOne> oneOnOnes = (List<OneOnOne>) testObj.findAll();
+        
+        assertEquals(oneOnOnes.size(), 1);
+
+        testObj.delete(oneOnOne);
+        oneOnOnes = (List<OneOnOne>) testObj.findAll();
+        assertEquals(oneOnOnes.size(), 0);
+    }
 }
