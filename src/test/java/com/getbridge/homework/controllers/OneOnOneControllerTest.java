@@ -6,6 +6,7 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -112,7 +113,7 @@ public class OneOnOneControllerTest {
     updatedOneOnOne.setId(123L);
     updatedOneOnOne.setClosed(true);
 
-    when(repository.save(oneOnOne)).thenReturn(oneOnOne);
+    when(repository.save(updatedOneOnOne)).thenReturn(updatedOneOnOne);
     when(repository.findById(123L)).thenReturn(Optional.of(oneOnOne));
 
     mockMvc.perform(post("/one_on_ones/{id}/close", 123L).contentType("application/json")
@@ -120,7 +121,7 @@ public class OneOnOneControllerTest {
         .andExpect(status().is(201))
         .andExpect(content().string(objectMapper.writeValueAsString(updatedOneOnOne)));
 
-    verify(repository).save(oneOnOne);
+    verify(repository).save(updatedOneOnOne);
   }
 
   @Test
@@ -136,5 +137,21 @@ public class OneOnOneControllerTest {
 
     verify(repository).findById(123L);
     verifyNoMoreInteractions(repository);
+  }
+
+  @Test
+  public void itShouldBeAbleToUpdateAnItem() throws Exception {
+    OneOnOne updatedOneOnOne = new OneOnOne();
+    updatedOneOnOne.setId(123L);
+    updatedOneOnOne.setDescription("desc");
+    updatedOneOnOne.setTitle("title");
+
+    when(repository.save(updatedOneOnOne)).thenReturn(updatedOneOnOne);
+
+    mockMvc.perform(put("/one_on_ones").contentType("application/json")
+            .content(objectMapper.writeValueAsString(updatedOneOnOne)))
+        .andExpect(status().is(201));
+
+    verify(repository).save(updatedOneOnOne);
   }
 }
