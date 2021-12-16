@@ -12,6 +12,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.getbridge.homework.dao.OneOnOneRepository;
 import com.getbridge.homework.model.OneOnOne;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +31,21 @@ public class OneOnOneControllerTest {
 
   @MockBean
   private OneOnOneRepository repository;
+
+  @Test
+  public void itShouldReturnAllOneOnOnes() throws Exception {
+    OneOnOne oneOnOne = new OneOnOne();
+    oneOnOne.setId(123L);
+    List<OneOnOne> oneOnOnes = new ArrayList<>();
+    oneOnOnes.add(oneOnOne);
+
+    when(repository.findAll()).thenReturn(oneOnOnes);
+
+    mockMvc.perform(get("/one_on_ones")
+            .contentType("application/json"))
+        .andExpect(content().string(objectMapper.writeValueAsString(oneOnOnes)))
+        .andExpect(status().isOk());
+  }
 
   @Test
   public void itShouldReturnAOneOnOneByItsId() throws Exception {

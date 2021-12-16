@@ -2,7 +2,10 @@ package com.getbridge.homework.controllers;
 
 import com.getbridge.homework.dao.OneOnOneRepository;
 import com.getbridge.homework.model.OneOnOne;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +22,13 @@ public class OneOnOneController {
 
   @Autowired
   private OneOnOneRepository repository;
+
+  @GetMapping("/one_on_ones")
+  public List<OneOnOne> getOneOnOnes() {
+    Iterable<OneOnOne> result = repository.findAll();
+    return StreamSupport.stream(result.spliterator(), false)
+        .collect(Collectors.toList());
+  }
 
   @GetMapping("/one_on_ones/{id}")
   public OneOnOne getOneOnOne(@PathVariable("id") Long id) {
