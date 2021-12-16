@@ -43,12 +43,7 @@ public class OneOnOneController {
 
   @PostMapping("/one_on_ones")
   public ResponseEntity<OneOnOne> save(@RequestBody OneOnOne oneOnOne) {
-    if (oneOnOne == null) {
-      throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-          "Please provide a proper OneOnOne object in the request body");
-    }
-    OneOnOne saved = repository.save(oneOnOne);
-    return new ResponseEntity<>(saved, HttpStatus.CREATED);
+    return saveItem(oneOnOne);
   }
 
   @DeleteMapping("/one_on_ones/{id}")
@@ -72,7 +67,15 @@ public class OneOnOneController {
 
   @PutMapping("/one_on_ones")
   public ResponseEntity<OneOnOne> update(@RequestBody OneOnOne oneOnOne) {
-    repository.save(oneOnOne);
-    return new ResponseEntity<>(HttpStatus.CREATED);
+    return saveItem(oneOnOne);
+  }
+
+  private ResponseEntity<OneOnOne> saveItem(OneOnOne oneOnOne) {
+    if (oneOnOne == null) {
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+          "Please provide a proper OneOnOne object in the request body");
+    }
+    OneOnOne saved = repository.save(oneOnOne);
+    return new ResponseEntity<>(saved, HttpStatus.CREATED);
   }
 }

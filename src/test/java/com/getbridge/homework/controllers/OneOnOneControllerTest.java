@@ -131,7 +131,8 @@ public class OneOnOneControllerTest {
 
     when(repository.save(oneOnOne)).thenReturn(oneOnOne);
 
-    mockMvc.perform(post("/one_on_ones/{id}/close", 123L).contentType("application/json")
+    mockMvc.perform(post("/one_on_ones/{id}/close", 123L)
+            .contentType("application/json")
             .content(objectMapper.writeValueAsString(oneOnOne)))
         .andExpect(status().is(400));
 
@@ -153,5 +154,13 @@ public class OneOnOneControllerTest {
         .andExpect(status().is(201));
 
     verify(repository).save(updatedOneOnOne);
+  }
+
+  @Test
+  public void itReturnsAnErrorWhenThereIsNoUpdateObject() throws Exception {
+    mockMvc.perform(put("/one_on_ones").contentType("application/json")
+            .content("")).andExpect(status().is(400));
+
+    verifyNoMoreInteractions(repository);
   }
 }
