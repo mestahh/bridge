@@ -5,6 +5,7 @@ import com.getbridge.homework.model.OneOnOne;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -29,11 +30,12 @@ public class OneOnOneController {
   }
 
   @PostMapping("/one_on_ones")
-  public OneOnOne save(@RequestBody OneOnOne oneOnOne) {
+  public ResponseEntity<OneOnOne> save(@RequestBody OneOnOne oneOnOne) {
     if (oneOnOne == null) {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
           "Please provide a proper OneOnOne object in the request body");
     }
-    return repository.save(oneOnOne);
+    OneOnOne saved = repository.save(oneOnOne);
+    return new ResponseEntity<>(saved, HttpStatus.CREATED);
   }
 }

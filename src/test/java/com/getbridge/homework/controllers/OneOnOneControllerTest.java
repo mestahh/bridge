@@ -63,6 +63,7 @@ public class OneOnOneControllerTest {
 
     mockMvc.perform(post("/one_on_ones").contentType("application/json")
             .content(objectMapper.writeValueAsString(oneOnOne)))
+        .andExpect(status().is(201))
         .andExpect(content().string(objectMapper.writeValueAsString(oneOnOneWithId)));
     verify(repository).save(oneOnOne);
   }
