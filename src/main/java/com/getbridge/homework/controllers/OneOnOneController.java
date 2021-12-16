@@ -45,4 +45,17 @@ public class OneOnOneController {
     repository.deleteById(id);
     return new ResponseEntity(HttpStatus.ACCEPTED);
   }
+
+  @PostMapping("/one_on_ones/{id}/close")
+  public ResponseEntity<OneOnOne> close(@PathVariable("id") Long id) {
+    Optional<OneOnOne> saved = repository.findById(id);
+    if (saved.isPresent()) {
+      OneOnOne savedOneOnOne = saved.get();
+      savedOneOnOne.setClosed(true);
+      repository.save(savedOneOnOne);
+      return new ResponseEntity<>(savedOneOnOne, HttpStatus.CREATED);
+    }
+    throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+        "There is no One on one in the db with the id : " + id);
+  }
 }

@@ -1,6 +1,7 @@
 package com.getbridge.homework.controllers;
 
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -83,5 +84,40 @@ public class OneOnOneControllerTest {
             .contentType("application/json"))
         .andExpect(status().is(202));
     verify(repository).deleteById(123L);
+  }
+
+  @Test
+  public void itShouldBeAbleToCloseOneOnOnes() throws Exception {
+    OneOnOne oneOnOne = new OneOnOne();
+    oneOnOne.setId(123L);
+
+    OneOnOne updatedOneOnOne = new OneOnOne();
+    updatedOneOnOne.setId(123L);
+    updatedOneOnOne.setClosed(true);
+
+    when(repository.save(oneOnOne)).thenReturn(oneOnOne);
+    when(repository.findById(123L)).thenReturn(Optional.of(oneOnOne));
+
+    mockMvc.perform(post("/one_on_ones/{id}/close", 123L).contentType("application/json")
+            .content(objectMapper.writeValueAsString(oneOnOne)))
+        .andExpect(status().is(201))
+        .andExpect(content().string(objectMapper.writeValueAsString(updatedOneOnOne)));
+
+    verify(repository).save(oneOnOne);
+  }
+
+  @Test
+  public void itShouldReturnAnErrorOnClosingNotExistingOneOnOne() throws Exception {
+    OneOnOne oneOnOne = new OneOnOne();
+    oneOnOne.setId(123L);
+
+    when(repository.save(oneOnOne)).thenReturn(oneOnOne);
+
+    mockMvc.perform(post("/one_on_ones/{id}/close", 123L).contentType("application/json")
+            .content(objectMapper.writeValueAsString(oneOnOne)))
+        .andExpect(status().is(400));
+
+    verify(repository).findById(123L);
+    verifyNoMoreInteractions(repository);
   }
 }
