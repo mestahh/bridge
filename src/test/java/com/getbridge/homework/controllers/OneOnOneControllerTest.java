@@ -2,6 +2,7 @@ package com.getbridge.homework.controllers;
 
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -65,6 +66,7 @@ public class OneOnOneControllerTest {
             .content(objectMapper.writeValueAsString(oneOnOne)))
         .andExpect(status().is(201))
         .andExpect(content().string(objectMapper.writeValueAsString(oneOnOneWithId)));
+
     verify(repository).save(oneOnOne);
   }
 
@@ -73,5 +75,13 @@ public class OneOnOneControllerTest {
     mockMvc.perform(post("/one_on_ones").contentType("application/json")
             .content(""))
         .andExpect(status().is(400));
+  }
+
+  @Test
+  public void itShouldBeAbleToDeleteAOneOnOne() throws Exception {
+    mockMvc.perform(delete("/one_on_ones/{id}", 123L)
+            .contentType("application/json"))
+        .andExpect(status().is(202));
+    verify(repository).deleteById(123L);
   }
 }

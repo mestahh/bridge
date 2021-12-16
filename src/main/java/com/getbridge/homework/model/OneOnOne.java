@@ -21,4 +21,6 @@ public class OneOnOne {
   private LocalDate plannedTime;
   private String description;
   private String location;
+
+  private boolean closed;
 }
