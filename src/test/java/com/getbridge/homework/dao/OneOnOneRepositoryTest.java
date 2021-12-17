@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.getbridge.homework.model.OneOnOne;
+import com.getbridge.homework.model.Participants;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
@@ -72,5 +73,21 @@ public class OneOnOneRepositoryTest {
     List<OneOnOne> oneOnOnes = testObj.findByClosed(true);
     assertEquals(oneOnOnes.size(), 1);
     assertTrue(oneOnOnes.get(0).isClosed());
+  }
+
+  @Test
+  public void itShouldSaveParticipants() {
+    OneOnOne oneOnOne = new OneOnOne();
+    Participants participants = new Participants();
+    participants.setUser1Id(123L);
+    participants.setUser2Id(234L);
+    oneOnOne.setParticipants(participants);
+
+    testObj.save(oneOnOne);
+    List<OneOnOne> oneOnOnes = (List<OneOnOne>) testObj.findAll();
+
+    assertEquals(oneOnOnes.size(), 1);
+    assertEquals(oneOnOnes.get(0).getParticipants().getUser1Id(), 123L);
+    assertEquals(oneOnOnes.get(0).getParticipants().getUser2Id(), 234L);
   }
 }
