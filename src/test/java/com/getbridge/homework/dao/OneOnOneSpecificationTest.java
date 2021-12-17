@@ -39,14 +39,14 @@ public class OneOnOneSpecificationTest {
 
   @Test
   public void itReturnsNothingIfUserIdIsNotAmongParticipants() {
-    Specification<OneOnOne> spec = OneOnOneSpecification.isAuthorized(789L);
+    Specification<OneOnOne> spec = new OneOnOneSpecification(789L);
     List<OneOnOne> result = testObj.findAll(spec);
     assertEquals(0, result.size());
   }
 
   @Test
   public void itReturnsAllWhereUserIdIsAmongParticipants() {
-    Specification<OneOnOne> spec = OneOnOneSpecification.isAuthorized(123L);
+    Specification<OneOnOne> spec = new OneOnOneSpecification(123L);
     List<OneOnOne> result = testObj.findAll(spec);
     assertEquals(2, result.size());
     assertEquals(123L, result.get(0).getParticipants().getUser1Id());
@@ -58,7 +58,7 @@ public class OneOnOneSpecificationTest {
 
   @Test
   public void itReturnsAllWhereUserIdIs567L() {
-    Specification<OneOnOne> spec = OneOnOneSpecification.isAuthorized(567L);
+    Specification<OneOnOne> spec = new OneOnOneSpecification(567L);
     List<OneOnOne> result = testObj.findAll(spec);
     assertEquals(1, result.size());
     assertEquals(456L, result.get(0).getParticipants().getUser1Id());
@@ -67,7 +67,7 @@ public class OneOnOneSpecificationTest {
 
   @Test
   public void itReturnsAllWhereUserIdIs345L() {
-    Specification<OneOnOne> spec = OneOnOneSpecification.isAuthorized(345L);
+    Specification<OneOnOne> spec = new OneOnOneSpecification(345L);
     List<OneOnOne> result = testObj.findAll(spec);
     assertEquals(1, result.size());
     assertEquals(345L, result.get(0).getParticipants().getUser1Id());
