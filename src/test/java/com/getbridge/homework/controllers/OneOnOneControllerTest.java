@@ -175,33 +175,55 @@ public class OneOnOneControllerTest {
 
   @Test
   public void itShouldFilterClosedOneOnOnes() throws Exception {
-    OneOnOne oneOnOne = new OneOnOne();
-    oneOnOne.setId(123L);
     List<OneOnOne> oneOnOnes = new ArrayList<>();
-    oneOnOnes.add(oneOnOne);
+    List<OneOnOne> expected = new ArrayList<>();
 
-    when(repository.findByClosed(true)).thenReturn(oneOnOnes);
+    OneOnOne oneOnOne1 = new OneOnOne();
+    oneOnOne1.setId(123L);
+    oneOnOne1.setClosed(true);
+
+    OneOnOne oneOnOne2 = new OneOnOne();
+    oneOnOne2.setId(234L);
+    oneOnOne2.setClosed(false);
+
+    oneOnOnes.add(oneOnOne1);
+    oneOnOnes.add(oneOnOne2);
+
+    expected.add(oneOnOne1);
+
+    when(dao.findAll(789L)).thenReturn(oneOnOnes);
 
     mockMvc.perform(get("/one_on_ones?closed={closed}", true)
             .header("X-AUTHENTICATED-USER", "789")
             .contentType("application/json"))
-        .andExpect(content().string(objectMapper.writeValueAsString(oneOnOnes)))
+        .andExpect(content().string(objectMapper.writeValueAsString(expected)))
         .andExpect(status().isOk());
   }
 
   @Test
   public void itShouldFilterNotClosedOneOnOnes() throws Exception {
-    OneOnOne oneOnOne = new OneOnOne();
-    oneOnOne.setId(123L);
     List<OneOnOne> oneOnOnes = new ArrayList<>();
-    oneOnOnes.add(oneOnOne);
+    List<OneOnOne> expected = new ArrayList<>();
 
-    when(repository.findByClosed(false)).thenReturn(oneOnOnes);
+    OneOnOne oneOnOne1 = new OneOnOne();
+    oneOnOne1.setId(123L);
+    oneOnOne1.setClosed(true);
+
+    OneOnOne oneOnOne2 = new OneOnOne();
+    oneOnOne2.setId(234L);
+    oneOnOne2.setClosed(false);
+
+    oneOnOnes.add(oneOnOne1);
+    oneOnOnes.add(oneOnOne2);
+
+    expected.add(oneOnOne2);
+
+    when(dao.findAll(789L)).thenReturn(oneOnOnes);
 
     mockMvc.perform(get("/one_on_ones?closed={closed}", false)
             .header("X-AUTHENTICATED-USER", "789")
             .contentType("application/json"))
-        .andExpect(content().string(objectMapper.writeValueAsString(oneOnOnes)))
+        .andExpect(content().string(objectMapper.writeValueAsString(expected)))
         .andExpect(status().isOk());
   }
 }

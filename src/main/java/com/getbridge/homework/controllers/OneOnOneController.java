@@ -2,7 +2,6 @@ package com.getbridge.homework.controllers;
 
 import com.getbridge.homework.dao.OneOnOneDao;
 import com.getbridge.homework.dao.OneOnOneRepository;
-import com.getbridge.homework.dao.OneOnOneSpecification;
 import com.getbridge.homework.model.OneOnOne;
 import java.util.List;
 import java.util.Optional;
@@ -33,14 +32,14 @@ public class OneOnOneController {
   @GetMapping("/one_on_ones")
   public List<OneOnOne> getOneOnOnes(@RequestParam Optional<Boolean> closed,
       @RequestHeader("X-AUTHENTICATED-USER") Long userId) {
-    Iterable<OneOnOne> result;
-    if (closed.isPresent()) {
-      result = repository.findByClosed(closed.get());
-    } else {
-      result = dao.findAll(userId);
-    }
-    return StreamSupport.stream(result.spliterator(), false)
+    Iterable<OneOnOne> result = dao.findAll(userId);
+    List<OneOnOne> resultList = StreamSupport.stream(result.spliterator(), false)
         .collect(Collectors.toList());
+    if (closed.isPresent()) {
+      return resultList.stream().filter(i -> i.isClosed() == closed.get()).collect(
+          Collectors.toList());
+    }
+    return resultList;
   }
 
   @GetMapping("/one_on_ones/{id}")
