@@ -1,5 +1,6 @@
 package com.getbridge.homework.controllers;
 
+import com.getbridge.homework.dao.OneOnOneDao;
 import com.getbridge.homework.dao.OneOnOneRepository;
 import com.getbridge.homework.model.OneOnOne;
 import java.util.List;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
@@ -24,9 +26,11 @@ public class OneOnOneController {
 
   @Autowired
   private OneOnOneRepository repository;
+  @Autowired
+  private OneOnOneDao dao;
 
   @GetMapping("/one_on_ones")
-  public List<OneOnOne> getOneOnOnes(@RequestParam Optional<Boolean>  closed) {
+  public List<OneOnOne> getOneOnOnes(@RequestParam Optional<Boolean> closed) {
     Iterable<OneOnOne> result;
     if (closed.isPresent()) {
       result = repository.findByClosed(closed.get());
@@ -49,12 +53,18 @@ public class OneOnOneController {
 
   @PostMapping("/one_on_ones")
   public ResponseEntity<OneOnOne> save(@RequestBody OneOnOne oneOnOne) {
-    return saveItem(oneOnOne);
+    if (oneOnOne == null) {
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+          "Please provide a proper OneOnOne object in the request body");
+    }
+    OneOnOne saved = dao.save(oneOnOne);
+    return new ResponseEntity<>(saved, HttpStatus.CREATED);
   }
 
   @DeleteMapping("/one_on_ones/{id}")
-  public ResponseEntity delete(@PathVariable("id") Long id) {
-    repository.deleteById(id);
+  public ResponseEntity delete(@PathVariable("id") Long id,
+      @RequestHeader("X-AUTHENTICATED-USER") Long userId) {
+    dao.delete(id, userId);
     return new ResponseEntity(HttpStatus.ACCEPTED);
   }
 
@@ -72,16 +82,14 @@ public class OneOnOneController {
   }
 
   @PutMapping("/one_on_ones")
-  public ResponseEntity<OneOnOne> update(@RequestBody OneOnOne oneOnOne) {
-    return saveItem(oneOnOne);
-  }
-
-  private ResponseEntity<OneOnOne> saveItem(OneOnOne oneOnOne) {
+  public ResponseEntity<OneOnOne> update(@RequestBody OneOnOne oneOnOne,
+      @RequestHeader("X-AUTHENTICATED-USER") Long userId) {
     if (oneOnOne == null) {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
           "Please provide a proper OneOnOne object in the request body");
     }
-    OneOnOne saved = repository.save(oneOnOne);
+    OneOnOne saved = dao.update(oneOnOne, userId);
     return new ResponseEntity<>(saved, HttpStatus.CREATED);
   }
+
 }

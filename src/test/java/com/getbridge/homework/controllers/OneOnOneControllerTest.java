@@ -11,6 +11,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.getbridge.homework.dao.OneOnOneDao;
 import com.getbridge.homework.dao.OneOnOneRepository;
 import com.getbridge.homework.model.OneOnOne;
 import java.util.ArrayList;
@@ -32,6 +33,9 @@ public class OneOnOneControllerTest {
 
   @MockBean
   private OneOnOneRepository repository;
+
+  @MockBean
+  private OneOnOneDao dao;
 
   @Test
   public void itShouldReturnAllOneOnOnes() throws Exception {
@@ -79,14 +83,14 @@ public class OneOnOneControllerTest {
     oneOnOneWithId.setTitle("title");
     oneOnOneWithId.setId(1L);
 
-    when(repository.save(oneOnOne)).thenReturn(oneOnOneWithId);
+    when(dao.save(oneOnOne)).thenReturn(oneOnOneWithId);
 
     mockMvc.perform(post("/one_on_ones").contentType("application/json")
             .content(objectMapper.writeValueAsString(oneOnOne)))
         .andExpect(status().is(201))
         .andExpect(content().string(objectMapper.writeValueAsString(oneOnOneWithId)));
 
-    verify(repository).save(oneOnOne);
+    verify(dao).save(oneOnOne);
   }
 
   @Test
@@ -99,9 +103,10 @@ public class OneOnOneControllerTest {
   @Test
   public void itShouldBeAbleToDeleteAOneOnOne() throws Exception {
     mockMvc.perform(delete("/one_on_ones/{id}", 123L)
+            .header("X-AUTHENTICATED-USER", "789")
             .contentType("application/json"))
         .andExpect(status().is(202));
-    verify(repository).deleteById(123L);
+    verify(dao).delete(123L, 789L);
   }
 
   @Test
@@ -147,13 +152,14 @@ public class OneOnOneControllerTest {
     updatedOneOnOne.setDescription("desc");
     updatedOneOnOne.setTitle("title");
 
-    when(repository.save(updatedOneOnOne)).thenReturn(updatedOneOnOne);
+    when(dao.update(updatedOneOnOne, 789L)).thenReturn(updatedOneOnOne);
 
     mockMvc.perform(put("/one_on_ones").contentType("application/json")
+            .header("X-AUTHENTICATED-USER", "789")
             .content(objectMapper.writeValueAsString(updatedOneOnOne)))
         .andExpect(status().is(201));
 
-    verify(repository).save(updatedOneOnOne);
+    verify(dao).update(updatedOneOnOne, 789L);
   }
 
   @Test
