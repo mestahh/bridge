@@ -29,7 +29,7 @@ public class OneOnOneRepositoryTest {
 
     assertEquals(oneOnOnes.size(), 1);
   }
-  
+
   @Test
   public void itUpdatesAOneOnOne() {
     OneOnOne oneOnOne = new OneOnOne();
