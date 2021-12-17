@@ -13,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-
 @ExtendWith(SpringExtension.class)
 @DataJpaTest
 public class OneOnOneRepositoryTest {
@@ -23,7 +22,7 @@ public class OneOnOneRepositoryTest {
 
   @Test
   public void itShouldSaveOneOnOnes() {
-    OneOnOne oneOnOne = new OneOnOne();
+    OneOnOne oneOnOne = OneOnOne.builder().build();
 
     testObj.save(oneOnOne);
     List<OneOnOne> oneOnOnes = (List<OneOnOne>) testObj.findAll();
@@ -33,7 +32,7 @@ public class OneOnOneRepositoryTest {
 
   @Test
   public void itUpdatesAOneOnOne() {
-    OneOnOne oneOnOne = new OneOnOne();
+    OneOnOne oneOnOne = OneOnOne.builder().build();
 
     OneOnOne updated = testObj.save(oneOnOne);
     updated.setTitle("new title");
@@ -45,7 +44,7 @@ public class OneOnOneRepositoryTest {
 
   @Test
   public void itShouldDeleteOneOnOnes() {
-    OneOnOne oneOnOne = new OneOnOne();
+    OneOnOne oneOnOne = OneOnOne.builder().build();
 
     testObj.save(oneOnOne);
     List<OneOnOne> oneOnOnes = (List<OneOnOne>) testObj.findAll();
@@ -59,13 +58,15 @@ public class OneOnOneRepositoryTest {
 
   @Test
   public void itShouldFilterOneOnOnes() {
-    OneOnOne item1 = new OneOnOne();
-    item1.setId(123L);
-    item1.setClosed(true);
+    OneOnOne item1 = OneOnOne.builder()
+        .id(123L)
+        .closed(true)
+        .build();
 
-    OneOnOne item2 = new OneOnOne();
-    item2.setId(234L);
-    item2.setClosed(false);
+    OneOnOne item2 = OneOnOne.builder()
+        .id(234L)
+        .closed(false)
+        .build();
 
     testObj.save(item1);
     testObj.save(item2);
@@ -77,11 +78,14 @@ public class OneOnOneRepositoryTest {
 
   @Test
   public void itShouldSaveParticipants() {
-    OneOnOne oneOnOne = new OneOnOne();
-    Participants participants = new Participants();
-    participants.setUser1Id(123L);
-    participants.setUser2Id(234L);
-    oneOnOne.setParticipants(participants);
+    OneOnOne oneOnOne = OneOnOne.builder()
+        .participants(
+            Participants.builder()
+                .user1Id(123L)
+                .user2Id(234L)
+                .build()
+        )
+        .build();
 
     testObj.save(oneOnOne);
     List<OneOnOne> oneOnOnes = (List<OneOnOne>) testObj.findAll();

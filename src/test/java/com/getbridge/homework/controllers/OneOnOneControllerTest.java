@@ -39,8 +39,9 @@ public class OneOnOneControllerTest {
 
   @Test
   public void itShouldReturnAllOneOnOnes() throws Exception {
-    OneOnOne oneOnOne = new OneOnOne();
-    oneOnOne.setId(123L);
+    OneOnOne oneOnOne = OneOnOne.builder()
+        .id(123L)
+        .build();
     List<OneOnOne> oneOnOnes = new ArrayList<>();
     oneOnOnes.add(oneOnOne);
 
@@ -55,8 +56,9 @@ public class OneOnOneControllerTest {
 
   @Test
   public void itShouldReturnAOneOnOneByItsId() throws Exception {
-    OneOnOne result = new OneOnOne();
-    result.setId(123L);
+    OneOnOne result = OneOnOne.builder()
+        .id(123L)
+        .build();
     when(dao.findById(123L, 789L)).thenReturn(Optional.of(result));
 
     mockMvc.perform(get("/one_on_ones/{id}", 123L)
@@ -79,10 +81,15 @@ public class OneOnOneControllerTest {
 
   @Test
   public void itShouldBeAbleToSaveOneOnOne() throws Exception {
-    OneOnOne oneOnOne = new OneOnOne();
+    OneOnOne oneOnOne = OneOnOne.builder()
+        .title("title")
+        .build();
     oneOnOne.setTitle("title");
 
-    OneOnOne oneOnOneWithId = new OneOnOne();
+    OneOnOne oneOnOneWithId = OneOnOne.builder()
+        .title("title")
+        .id(1L)
+        .build();
     oneOnOneWithId.setTitle("title");
     oneOnOneWithId.setId(1L);
 
@@ -114,12 +121,14 @@ public class OneOnOneControllerTest {
 
   @Test
   public void itShouldBeAbleToCloseOneOnOnes() throws Exception {
-    OneOnOne oneOnOne = new OneOnOne();
-    oneOnOne.setId(123L);
+    OneOnOne oneOnOne = OneOnOne.builder()
+        .id(123L)
+        .build();
 
-    OneOnOne updatedOneOnOne = new OneOnOne();
-    updatedOneOnOne.setId(123L);
-    updatedOneOnOne.setClosed(true);
+    OneOnOne updatedOneOnOne = OneOnOne.builder()
+        .id(123L)
+        .closed(true)
+        .build();
 
     when(dao.update(updatedOneOnOne, 789L)).thenReturn(updatedOneOnOne);
     when(dao.findById(123L, 789L)).thenReturn(Optional.of(oneOnOne));
@@ -135,8 +144,9 @@ public class OneOnOneControllerTest {
 
   @Test
   public void itShouldReturnAnErrorOnClosingNotExistingOneOnOne() throws Exception {
-    OneOnOne oneOnOne = new OneOnOne();
-    oneOnOne.setId(123L);
+    OneOnOne oneOnOne = OneOnOne.builder()
+        .id(123L)
+        .build();
 
     mockMvc.perform(post("/one_on_ones/{id}/close", 123L)
             .contentType("application/json")
@@ -150,10 +160,11 @@ public class OneOnOneControllerTest {
 
   @Test
   public void itShouldBeAbleToUpdateAnItem() throws Exception {
-    OneOnOne updatedOneOnOne = new OneOnOne();
-    updatedOneOnOne.setId(123L);
-    updatedOneOnOne.setDescription("desc");
-    updatedOneOnOne.setTitle("title");
+    OneOnOne updatedOneOnOne = OneOnOne.builder()
+        .id(123L)
+        .description("desc")
+        .title("title")
+        .build();
 
     when(dao.update(updatedOneOnOne, 789L)).thenReturn(updatedOneOnOne);
 
@@ -178,13 +189,15 @@ public class OneOnOneControllerTest {
     List<OneOnOne> oneOnOnes = new ArrayList<>();
     List<OneOnOne> expected = new ArrayList<>();
 
-    OneOnOne oneOnOne1 = new OneOnOne();
-    oneOnOne1.setId(123L);
-    oneOnOne1.setClosed(true);
+    OneOnOne oneOnOne1 = OneOnOne.builder()
+        .id(123L)
+        .closed(true)
+        .build();
 
-    OneOnOne oneOnOne2 = new OneOnOne();
-    oneOnOne2.setId(234L);
-    oneOnOne2.setClosed(false);
+    OneOnOne oneOnOne2 = OneOnOne.builder()
+        .id(234L)
+        .closed(false)
+        .build();
 
     oneOnOnes.add(oneOnOne1);
     oneOnOnes.add(oneOnOne2);
@@ -205,13 +218,15 @@ public class OneOnOneControllerTest {
     List<OneOnOne> oneOnOnes = new ArrayList<>();
     List<OneOnOne> expected = new ArrayList<>();
 
-    OneOnOne oneOnOne1 = new OneOnOne();
-    oneOnOne1.setId(123L);
-    oneOnOne1.setClosed(true);
+    OneOnOne oneOnOne1 = OneOnOne.builder()
+        .id(123L)
+        .closed(true)
+        .build();
 
-    OneOnOne oneOnOne2 = new OneOnOne();
-    oneOnOne2.setId(234L);
-    oneOnOne2.setClosed(false);
+    OneOnOne oneOnOne2 = OneOnOne.builder()
+        .id(234L)
+        .closed(false)
+        .build();
 
     oneOnOnes.add(oneOnOne1);
     oneOnOnes.add(oneOnOne2);

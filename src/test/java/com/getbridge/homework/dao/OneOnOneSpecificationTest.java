@@ -28,15 +28,6 @@ public class OneOnOneSpecificationTest {
     saveOneOnOne(456L, 567L);
   }
 
-  private void saveOneOnOne(Long user1Id, Long user2Id) {
-    OneOnOne oneOnOne = new OneOnOne();
-    Participants participants = new Participants();
-    participants.setUser1Id(user1Id);
-    participants.setUser2Id(user2Id);
-    oneOnOne.setParticipants(participants);
-    testObj.save(oneOnOne);
-  }
-
   @Test
   public void itReturnsNothingIfUserIdIsNotAmongParticipants() {
     Specification<OneOnOne> spec = new OneOnOneSpecification(789L);
@@ -72,5 +63,17 @@ public class OneOnOneSpecificationTest {
     assertEquals(1, result.size());
     assertEquals(345L, result.get(0).getParticipants().getUser1Id());
     assertEquals(456L, result.get(0).getParticipants().getUser2Id());
+  }
+
+  private void saveOneOnOne(Long user1Id, Long user2Id) {
+    OneOnOne oneOnOne = OneOnOne.builder()
+        .participants(
+            Participants.builder()
+                .user1Id(user1Id)
+                .user2Id(user2Id)
+                .build()
+        )
+        .build();
+    testObj.save(oneOnOne);
   }
 }

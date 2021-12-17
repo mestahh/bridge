@@ -1,6 +1,5 @@
 package com.getbridge.homework.dao;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.eq;
@@ -31,7 +30,7 @@ public class OneOnOneDaoTest {
 
   @Test
   public void itShouldBeAbleToSave() {
-    OneOnOne oneOnOne = new OneOnOne();
+    OneOnOne oneOnOne = OneOnOne.builder().build();
     when(repository.save(oneOnOne)).thenReturn(oneOnOne);
 
     OneOnOne result = testObj.save(oneOnOne);
@@ -42,7 +41,6 @@ public class OneOnOneDaoTest {
   @Test
   public void itShouldNotUpdateIfUserIsNotAuthorized() {
     OneOnOne oneOnOne = createOneOnOne(123L, 234L);
-
     OneOnOne oneOnOneInDb = createOneOnOne(456L, 789L);
 
     when(repository.findById(oneOnOne.getId())).thenReturn(Optional.of(oneOnOneInDb));
@@ -55,7 +53,6 @@ public class OneOnOneDaoTest {
   @Test
   public void itShouldUpdateIfUserIsAuthorized() {
     OneOnOne oneOnOne = createOneOnOne(123L, 234L);
-
     OneOnOne oneOnOneInDb = createOneOnOne(123L, 789L);
 
     when(repository.findById(oneOnOne.getId())).thenReturn(Optional.of(oneOnOneInDb));
@@ -107,12 +104,16 @@ public class OneOnOneDaoTest {
   }
 
   private OneOnOne createOneOnOne(long user1Id, long user2Id) {
-    OneOnOne oneOnOne = new OneOnOne();
-    oneOnOne.setId(1);
-    Participants participants1 = new Participants();
-    participants1.setUser1Id(user1Id);
-    participants1.setUser2Id(user2Id);
-    oneOnOne.setParticipants(participants1);
+    OneOnOne oneOnOne = OneOnOne.builder()
+        .id(1)
+        .participants(
+            Participants.builder()
+                .user1Id(user1Id)
+                .user2Id(user2Id)
+                .build()
+        )
+        .build();
+
     return oneOnOne;
   }
 }
