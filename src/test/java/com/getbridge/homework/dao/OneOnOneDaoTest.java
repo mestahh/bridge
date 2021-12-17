@@ -1,6 +1,7 @@
 package com.getbridge.homework.dao;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -37,18 +38,9 @@ public class OneOnOneDaoTest {
 
   @Test
   public void itShouldNotUpdateIfUserIsNotAuthorized() {
-    OneOnOne oneOnOne = new OneOnOne();
-    oneOnOne.setId(1);
-    Participants participants1 = new Participants();
-    participants1.setUser1Id(123L);
-    participants1.setUser2Id(234L);
-    oneOnOne.setParticipants(participants1);
+    OneOnOne oneOnOne = createOneOnOne(123L, 234L);
 
-    OneOnOne oneOnOneInDb = new OneOnOne();
-    Participants participants2 = new Participants();
-    participants2.setUser1Id(456L);
-    participants2.setUser2Id(789L);
-    oneOnOneInDb.setParticipants(participants2);
+    OneOnOne oneOnOneInDb = createOneOnOne(456L, 789L);
 
     when(repository.findById(oneOnOne.getId())).thenReturn(Optional.of(oneOnOneInDb));
 
@@ -59,18 +51,9 @@ public class OneOnOneDaoTest {
 
   @Test
   public void itShouldUpdateIfUserIsAuthorized() {
-    OneOnOne oneOnOne = new OneOnOne();
-    oneOnOne.setId(1);
-    Participants participants1 = new Participants();
-    participants1.setUser1Id(123L);
-    participants1.setUser2Id(234L);
-    oneOnOne.setParticipants(participants1);
+    OneOnOne oneOnOne = createOneOnOne(123L, 234L);
 
-    OneOnOne oneOnOneInDb = new OneOnOne();
-    Participants participants2 = new Participants();
-    participants2.setUser1Id(123L);
-    participants2.setUser2Id(789L);
-    oneOnOneInDb.setParticipants(participants2);
+    OneOnOne oneOnOneInDb = createOneOnOne(123L, 789L);
 
     when(repository.findById(oneOnOne.getId())).thenReturn(Optional.of(oneOnOneInDb));
     testObj.update(oneOnOne, 123L);
@@ -80,33 +63,48 @@ public class OneOnOneDaoTest {
 
   @Test
   public void itShouldNotDeleteIfNotAuthorized() {
-    OneOnOne oneOnOne = new OneOnOne();
-    oneOnOne.setId(1);
-    Participants participants1 = new Participants();
-    participants1.setUser1Id(345L);
-    participants1.setUser2Id(234L);
-    oneOnOne.setParticipants(participants1);
+    OneOnOne oneOnOne = createOneOnOne(345L, 234L);
 
     when(repository.findById(123L)).thenReturn(Optional.of(oneOnOne));
 
-    assertThrows(NotAuthorizedException.class, () -> {
-      testObj.delete(123L, 456L);
-    });
+    assertThrows(NotAuthorizedException.class, () -> testObj.delete(123L, 456L));
   }
 
   @Test
   public void itShouldBeAbleToDelete() {
-    OneOnOne oneOnOne = new OneOnOne();
-    oneOnOne.setId(1);
-    Participants participants1 = new Participants();
-    participants1.setUser1Id(123L);
-    participants1.setUser2Id(234L);
-    oneOnOne.setParticipants(participants1);
+    OneOnOne oneOnOne = createOneOnOne(123L, 234L);
 
     when(repository.findById(123L)).thenReturn(Optional.of(oneOnOne));
 
     testObj.delete(123L, 123L);
     verify(repository).deleteById(123L);
+  }
+
+  @Test
+  public void itShouldThrowExceptionIfNotAuthorizedToFindById() {
+    OneOnOne oneOnOne = createOneOnOne(123L, 234L);
+    when(repository.findById(oneOnOne.getId())).thenReturn(Optional.of(oneOnOne));
+
+    assertThrows(NotAuthorizedException.class, () -> testObj.findById(oneOnOne.getId(), 789L));
+  }
+
+  @Test
+  public void itShouldReturnByAnId() {
+    OneOnOne oneOnOne = createOneOnOne(123L, 234L);
+    when(repository.findById(oneOnOne.getId())).thenReturn(Optional.of(oneOnOne));
+
+    Optional<OneOnOne> result = testObj.findById(1L, 234L);
+    assertTrue(result.isPresent());
+  }
+
+  private OneOnOne createOneOnOne(long user1Id, long user2Id) {
+    OneOnOne oneOnOne = new OneOnOne();
+    oneOnOne.setId(1);
+    Participants participants1 = new Participants();
+    participants1.setUser1Id(user1Id);
+    participants1.setUser2Id(user2Id);
+    oneOnOne.setParticipants(participants1);
+    return oneOnOne;
   }
 }
 

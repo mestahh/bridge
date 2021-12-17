@@ -56,9 +56,10 @@ public class OneOnOneControllerTest {
   public void itShouldReturnAOneOnOneByItsId() throws Exception {
     OneOnOne result = new OneOnOne();
     result.setId(123L);
-    when(repository.findById(123L)).thenReturn(Optional.of(result));
+    when(dao.findById(123L, 789L)).thenReturn(Optional.of(result));
 
     mockMvc.perform(get("/one_on_ones/{id}", 123L)
+            .header("X-AUTHENTICATED-USER", "789")
             .contentType("application/json"))
         .andExpect(content().string(objectMapper.writeValueAsString(result)))
         .andExpect(status().isOk());
@@ -66,9 +67,10 @@ public class OneOnOneControllerTest {
 
   @Test
   public void itShouldReturnAnEmptyObjectIfNoneFound() throws Exception {
-    when(repository.findById(123L)).thenReturn(Optional.empty());
+    when(dao.findById(123L, 789L)).thenReturn(Optional.empty());
 
     mockMvc.perform(get("/one_on_ones/{id}", 123L)
+            .header("X-AUTHENTICATED-USER", "789")
             .contentType("application/json"))
         .andExpect(content().string(""))
         .andExpect(status().is(204));
@@ -119,7 +121,7 @@ public class OneOnOneControllerTest {
     updatedOneOnOne.setClosed(true);
 
     when(dao.update(updatedOneOnOne, 789L)).thenReturn(updatedOneOnOne);
-    when(repository.findById(123L)).thenReturn(Optional.of(oneOnOne));
+    when(dao.findById(123L, 789L)).thenReturn(Optional.of(oneOnOne));
 
     mockMvc.perform(post("/one_on_ones/{id}/close", 123L).contentType("application/json")
             .header("X-AUTHENTICATED-USER", "789")
@@ -141,7 +143,7 @@ public class OneOnOneControllerTest {
             .content(objectMapper.writeValueAsString(oneOnOne)))
         .andExpect(status().is(400));
 
-    verify(repository).findById(123L);
+    verify(dao).findById(123L, 789L);
     verifyNoMoreInteractions(repository);
   }
 

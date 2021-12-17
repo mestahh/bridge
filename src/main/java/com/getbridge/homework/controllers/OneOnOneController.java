@@ -42,8 +42,9 @@ public class OneOnOneController {
   }
 
   @GetMapping("/one_on_ones/{id}")
-  public OneOnOne getOneOnOne(@PathVariable("id") Long id) {
-    Optional<OneOnOne> oneOnOne = repository.findById(id);
+  public OneOnOne getOneOnOne(@PathVariable("id") Long id,
+      @RequestHeader("X-AUTHENTICATED-USER") Long userId) {
+    Optional<OneOnOne> oneOnOne = dao.findById(id, userId);
     if (!oneOnOne.isPresent()) {
       throw new ResponseStatusException(HttpStatus.NO_CONTENT,
           "There was no one on one with the id + " + id);
@@ -71,7 +72,7 @@ public class OneOnOneController {
   @PostMapping("/one_on_ones/{id}/close")
   public ResponseEntity<OneOnOne> close(@PathVariable("id") Long id,
       @RequestHeader("X-AUTHENTICATED-USER") Long userId) {
-    Optional<OneOnOne> saved = repository.findById(id);
+    Optional<OneOnOne> saved = dao.findById(id, userId);
     if (saved.isPresent()) {
       OneOnOne savedOneOnOne = saved.get();
       savedOneOnOne.setClosed(true);
