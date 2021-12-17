@@ -118,15 +118,16 @@ public class OneOnOneControllerTest {
     updatedOneOnOne.setId(123L);
     updatedOneOnOne.setClosed(true);
 
-    when(repository.save(updatedOneOnOne)).thenReturn(updatedOneOnOne);
+    when(dao.update(updatedOneOnOne, 789L)).thenReturn(updatedOneOnOne);
     when(repository.findById(123L)).thenReturn(Optional.of(oneOnOne));
 
     mockMvc.perform(post("/one_on_ones/{id}/close", 123L).contentType("application/json")
+            .header("X-AUTHENTICATED-USER", "789")
             .content(objectMapper.writeValueAsString(oneOnOne)))
         .andExpect(status().is(201))
         .andExpect(content().string(objectMapper.writeValueAsString(updatedOneOnOne)));
 
-    verify(repository).save(updatedOneOnOne);
+    verify(dao).update(updatedOneOnOne, 789L);
   }
 
   @Test
@@ -134,10 +135,9 @@ public class OneOnOneControllerTest {
     OneOnOne oneOnOne = new OneOnOne();
     oneOnOne.setId(123L);
 
-    when(repository.save(oneOnOne)).thenReturn(oneOnOne);
-
     mockMvc.perform(post("/one_on_ones/{id}/close", 123L)
             .contentType("application/json")
+            .header("X-AUTHENTICATED-USER", "789")
             .content(objectMapper.writeValueAsString(oneOnOne)))
         .andExpect(status().is(400));
 

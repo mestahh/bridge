@@ -69,12 +69,13 @@ public class OneOnOneController {
   }
 
   @PostMapping("/one_on_ones/{id}/close")
-  public ResponseEntity<OneOnOne> close(@PathVariable("id") Long id) {
+  public ResponseEntity<OneOnOne> close(@PathVariable("id") Long id,
+      @RequestHeader("X-AUTHENTICATED-USER") Long userId) {
     Optional<OneOnOne> saved = repository.findById(id);
     if (saved.isPresent()) {
       OneOnOne savedOneOnOne = saved.get();
       savedOneOnOne.setClosed(true);
-      repository.save(savedOneOnOne);
+      dao.update(savedOneOnOne, userId);
       return new ResponseEntity<>(savedOneOnOne, HttpStatus.CREATED);
     }
     throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
