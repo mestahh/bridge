@@ -1,0 +1,144 @@
+{
+	"variables": [],
+	"info": {
+		"name": "bridge",
+		"_postman_id": "359aa0c7-d1fd-dedf-7228-f7279da1198f",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "save",
+			"request": {
+				"url": "localhost:8080/one_on_ones",
+				"method": "POST",
+				"header": [
+					{
+						"key": "X-AUTHENTICATED-USER",
+						"value": "123",
+						"description": "",
+						"disabled": true
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"participants\": {\n\t\t\"user1Id\": 123,\n\t\t\"user2Id\": 234\n\t},\n\t\"title\": \"First\",\n\t\"description\": \"The first 1:1\"\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "list",
+			"request": {
+				"url": "http://localhost:8080/one_on_ones",
+				"method": "GET",
+				"header": [
+					{
+						"key": "X-AUTHENTICATED-USER",
+						"value": "234",
+						"description": ""
+					}
+				],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "find by id",
+			"request": {
+				"url": "http://localhost:8080/one_on_ones/1",
+				"method": "GET",
+				"header": [
+					{
+						"key": "X-AUTHENTICATED-USER",
+						"value": "123",
+						"description": ""
+					}
+				],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "filter",
+			"request": {
+				"url": {
+					"raw": "http://localhost:8080/one_on_ones?closed=false",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"one_on_ones"
+					],
+					"query": [
+						{
+							"key": "closed",
+							"value": "false",
+							"equals": true,
+							"description": ""
+						}
+					],
+					"variable": []
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "X-AUTHENTICATED-USER",
+						"value": "123",
+						"description": ""
+					}
+				],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "delete",
+			"request": {
+				"url": "http://localhost:8080/one_on_ones/5",
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "X-AUTHENTICATED-USER",
+						"value": "234",
+						"description": ""
+					}
+				],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "update",
+			"request": {
+				"url": "localhost:8080/one_on_ones",
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"id\": 7,\n    \"title\": \"First\",\n    \"participants\": {\n        \"id\": 8,\n        \"user1Id\": 123,\n        \"user2Id\": 234\n    },\n    \"plannedTime\": null,\n    \"description\": \"Updated\",\n    \"location\": null,\n    \"closed\": false\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		}
+	]
+}
