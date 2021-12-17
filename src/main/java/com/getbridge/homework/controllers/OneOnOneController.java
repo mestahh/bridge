@@ -1,7 +1,6 @@
 package com.getbridge.homework.controllers;
 
 import com.getbridge.homework.dao.OneOnOneDao;
-import com.getbridge.homework.dao.OneOnOneRepository;
 import com.getbridge.homework.exceptions.NotAuthorizedException;
 import com.getbridge.homework.model.OneOnOne;
 import java.util.List;
@@ -27,14 +26,15 @@ import org.springframework.web.server.ResponseStatusException;
 @RestController
 public class OneOnOneController {
 
-  @Autowired
-  private OneOnOneRepository repository;
+  public static final String X_AUTHENTICATED_USER = "X-AUTHENTICATED-USER";
+  public static final String ID = "id";
+
   @Autowired
   private OneOnOneDao dao;
 
   @GetMapping("/one_on_ones")
   public List<OneOnOne> getOneOnOnes(@RequestParam Optional<Boolean> closed,
-      @RequestHeader("X-AUTHENTICATED-USER") Long userId) {
+      @RequestHeader(X_AUTHENTICATED_USER) Long userId) {
     Iterable<OneOnOne> result = dao.findAll(userId);
     List<OneOnOne> resultList = StreamSupport.stream(result.spliterator(), false)
         .collect(Collectors.toList());
@@ -46,8 +46,8 @@ public class OneOnOneController {
   }
 
   @GetMapping("/one_on_ones/{id}")
-  public OneOnOne getOneOnOne(@PathVariable("id") Long id,
-      @RequestHeader("X-AUTHENTICATED-USER") Long userId) {
+  public OneOnOne getOneOnOne(@PathVariable(ID) Long id,
+      @RequestHeader(X_AUTHENTICATED_USER) Long userId) {
     Optional<OneOnOne> oneOnOne = dao.findById(id, userId);
     if (!oneOnOne.isPresent()) {
       throw new ResponseStatusException(HttpStatus.NO_CONTENT,
@@ -67,15 +67,15 @@ public class OneOnOneController {
   }
 
   @DeleteMapping("/one_on_ones/{id}")
-  public ResponseEntity delete(@PathVariable("id") Long id,
-      @RequestHeader("X-AUTHENTICATED-USER") Long userId) {
+  public ResponseEntity delete(@PathVariable(ID) Long id,
+      @RequestHeader(X_AUTHENTICATED_USER) Long userId) {
     dao.delete(id, userId);
     return new ResponseEntity(HttpStatus.ACCEPTED);
   }
 
   @PostMapping("/one_on_ones/{id}/close")
-  public ResponseEntity<OneOnOne> close(@PathVariable("id") Long id,
-      @RequestHeader("X-AUTHENTICATED-USER") Long userId) {
+  public ResponseEntity<OneOnOne> close(@PathVariable(ID) Long id,
+      @RequestHeader(X_AUTHENTICATED_USER) Long userId) {
     Optional<OneOnOne> saved = dao.findById(id, userId);
     if (saved.isPresent()) {
       OneOnOne savedOneOnOne = saved.get();
@@ -89,7 +89,7 @@ public class OneOnOneController {
 
   @PutMapping("/one_on_ones")
   public ResponseEntity<OneOnOne> update(@RequestBody OneOnOne oneOnOne,
-      @RequestHeader("X-AUTHENTICATED-USER") Long userId) {
+      @RequestHeader(X_AUTHENTICATED_USER) Long userId) {
     if (oneOnOne == null) {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
           "Please provide a proper OneOnOne object in the request body");
@@ -98,8 +98,8 @@ public class OneOnOneController {
     return new ResponseEntity<>(saved, HttpStatus.CREATED);
   }
 
-  @ResponseStatus(value=HttpStatus.UNAUTHORIZED,
-      reason="Unauthorized")
+  @ResponseStatus(value = HttpStatus.UNAUTHORIZED,
+      reason = "Unauthorized")
   @ExceptionHandler(NotAuthorizedException.class)
   public void notAuthorizedExceptionHandler() {
 

@@ -11,5 +11,4 @@ public interface OneOnOneRepository extends CrudRepository<OneOnOne, Long> {
   List<OneOnOne> findByClosed(Boolean closed);
 
   List<OneOnOne> findAll(Specification spec);
-
 }

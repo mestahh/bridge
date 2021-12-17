@@ -12,6 +12,9 @@ import org.springframework.data.jpa.domain.Specification;
 @EqualsAndHashCode(of = {"userId"})
 public class OneOnOneSpecification implements Specification<OneOnOne> {
 
+  public static final String PARTICIPANTS = "participants";
+  public static final String USER_1_ID = "user1Id";
+  public static final String USER_2_ID = "user2Id";
   private final long userId;
 
   public OneOnOneSpecification(long userId) {
@@ -21,8 +24,8 @@ public class OneOnOneSpecification implements Specification<OneOnOne> {
   @Override
   public Predicate toPredicate(Root<OneOnOne> root, CriteriaQuery<?> query,
       CriteriaBuilder criteriaBuilder) {
-    Path<Object> user1Id = root.get("participants").get("user1Id");
-    Path<Object> user2Id = root.get("participants").get("user2Id");
+    Path<Object> user1Id = root.get(PARTICIPANTS).get(USER_1_ID);
+    Path<Object> user2Id = root.get(PARTICIPANTS).get(USER_2_ID);
     return criteriaBuilder.or(criteriaBuilder.equal(user1Id, userId),
         criteriaBuilder.equal(user2Id, userId));
   }
