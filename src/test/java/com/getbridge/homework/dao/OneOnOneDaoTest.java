@@ -1,13 +1,16 @@
 package com.getbridge.homework.dao;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.getbridge.homework.exceptions.NotAuthorizedException;
 import com.getbridge.homework.model.OneOnOne;
 import com.getbridge.homework.model.Participants;
+import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -95,6 +98,12 @@ public class OneOnOneDaoTest {
 
     Optional<OneOnOne> result = testObj.findById(1L, 234L);
     assertTrue(result.isPresent());
+  }
+
+  @Test
+  public void shouldReturnOnlyTheOnesWhereUserIdIsOneOfTheParticipants() {
+    List<OneOnOne> result = testObj.findAll(789L);
+    verify(repository).findAll(eq(new OneOnOneSpecification(789L)));
   }
 
   private OneOnOne createOneOnOne(long user1Id, long user2Id) {

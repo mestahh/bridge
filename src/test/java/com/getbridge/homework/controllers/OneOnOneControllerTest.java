@@ -44,9 +44,10 @@ public class OneOnOneControllerTest {
     List<OneOnOne> oneOnOnes = new ArrayList<>();
     oneOnOnes.add(oneOnOne);
 
-    when(repository.findAll()).thenReturn(oneOnOnes);
+    when(dao.findAll(789L)).thenReturn(oneOnOnes);
 
     mockMvc.perform(get("/one_on_ones")
+            .header("X-AUTHENTICATED-USER", "789")
             .contentType("application/json"))
         .andExpect(content().string(objectMapper.writeValueAsString(oneOnOnes)))
         .andExpect(status().isOk());
@@ -167,7 +168,7 @@ public class OneOnOneControllerTest {
   @Test
   public void itReturnsAnErrorWhenThereIsNoUpdateObject() throws Exception {
     mockMvc.perform(put("/one_on_ones").contentType("application/json")
-            .content("")).andExpect(status().is(400));
+        .content("")).andExpect(status().is(400));
 
     verifyNoMoreInteractions(repository);
   }
@@ -182,6 +183,7 @@ public class OneOnOneControllerTest {
     when(repository.findByClosed(true)).thenReturn(oneOnOnes);
 
     mockMvc.perform(get("/one_on_ones?closed={closed}", true)
+            .header("X-AUTHENTICATED-USER", "789")
             .contentType("application/json"))
         .andExpect(content().string(objectMapper.writeValueAsString(oneOnOnes)))
         .andExpect(status().isOk());
@@ -197,6 +199,7 @@ public class OneOnOneControllerTest {
     when(repository.findByClosed(false)).thenReturn(oneOnOnes);
 
     mockMvc.perform(get("/one_on_ones?closed={closed}", false)
+            .header("X-AUTHENTICATED-USER", "789")
             .contentType("application/json"))
         .andExpect(content().string(objectMapper.writeValueAsString(oneOnOnes)))
         .andExpect(status().isOk());
